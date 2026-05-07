@@ -176,3 +176,27 @@ MODALES DE APOYOS - ESTILO SECONDARY
     color: #ffffff;
     opacity: 1;
 }
+/*=============================================
+VISTA VERIFICACION - tabla de datos
+=============================================*/
+
+#vista-verificacion #tblDatos {
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+
+#vista-verificacion #tblDatos th,
+#vista-verificacion #tblDatos td {
+    display: table-cell !important;
+    font-size: 12px !important;
+    line-height: 1.25 !important;
+    padding: 8px 6px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    vertical-align: middle !important;
+}
+
+#vista-verificacion #tblDatos.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:before,
+#vista-verificacion #tblDatos.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
+    display: none;
+}
