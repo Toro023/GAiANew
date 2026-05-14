@@ -1,4 +1,37 @@
 /*=============================================
+ACTIVAR / DESACTIVAR FICHA
+=============================================*/
+$(document).on("click", ".btnActivarFicha", function(){
+    let boton = $(this);
+    let estadoActual = boton.attr("data-estadoFicha");
+    let idFicha = boton.attr("data-idFicha");
+
+    $.ajax({
+        url: "ajax/fichas.ajax.php",
+        method: "POST",
+        data: {
+            idFichaEstado: idFicha,
+            estado: estadoActual
+        },
+        success: function (respuesta) {
+            if (respuesta.trim()==="ok"){
+                if (estadoActual === "activo") {
+                    boton.removeClass("btn-danger");
+                    boton.addClass("btn-success");
+                    boton.html("activo");
+                    boton.attr("data-estadoFicha","inactivo");
+                } else {
+                    boton.removeClass("btn-success");
+                    boton.addClass("btn-danger");
+                    boton.html("inactivo");
+                    boton.attr("data-estadoFicha","activo");
+                }
+            }
+        }
+    });
+});
+
+/*=============================================
 EDITAR FICHA
 =============================================*/
 $(document).on("click", ".btnEditarFicha", function() {

@@ -38,6 +38,30 @@ class AjaxFichas
         $respuesta = ControladorFichas::ctrMostrarFichas($item, $valor);
         echo json_encode($respuesta);
     }
+
+    /*=============================================
+    CAMBIAR ESTADO FICHA
+    =============================================*/
+    public $idFichaEstado;
+    public $estado;
+
+    public function ajaxCambiarEstado()
+    {
+        $idFicha = $this->idFichaEstado;
+        $estado = $this->estado;
+        $respuesta = ControladorFichas::ctrCambiarEstadoFicha($idFicha, $estado);
+        echo $respuesta ? 'ok' : 'error';
+    }
+}
+
+/*=============================================
+CAMBIAR ESTADO FICHA
+=============================================*/
+if (isset($_POST["idFichaEstado"]) && isset($_POST["estado"])) {
+    $actFicha = new AjaxFichas();
+    $actFicha->idFichaEstado = $_POST["idFichaEstado"];
+    $actFicha->estado = $_POST["estado"];
+    $actFicha->ajaxCambiarEstado();
 }
 
 /*=============================================

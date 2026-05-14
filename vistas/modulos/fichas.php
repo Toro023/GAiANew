@@ -38,6 +38,7 @@
                             <th>Fecha Inicio</th>
                             <th>Fecha Fin Lectiva</th>
                             <th>Fecha Fin</th>
+                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -61,6 +62,13 @@
                                     <td>' . $value["fecha_inicio"] . '</td>
                                     <td>' . $value["fecha_fin_lectiva"] . '</td>
                                     <td>' . $value["fecha_fin"] . '</td>
+                                    <td>';
+                                    if ($value["estado"] == "activo") {
+                                        echo "<button class='btn btn-xs btn-success btnActivarFicha' data-estadoFicha='inactivo' data-idFicha='" . $value["id_ficha"] . "'>activo</button>";
+                                    } else {
+                                        echo "<button class='btn btn-xs btn-danger btnActivarFicha' data-estadoFicha='activo' data-idFicha='" . $value["id_ficha"] . "'>inactivo</button>";
+                                    }
+                            echo '</td>
                                     <td>
                                         <div class="btn-group">
                                             <button class="btn btn-sm btn-outline-light btnEditarFicha" data-idFicha="' . $value["id_ficha"] . '" data-toggle="modal" data-target="#modalEditarFicha"><i class="fas fa-edit"></i></button>

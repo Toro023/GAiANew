@@ -119,4 +119,20 @@ class ControladorFichas
             }
         }
     }
+
+    /*=============================================
+    CAMBIAR ESTADO FICHA
+    =============================================*/
+    static public function ctrCambiarEstadoFicha($idFicha, $estado)
+    {
+        $tabla = "fichas";
+        $item1 = "estado";
+        $valor1 = $estado;
+        $item2 = "id_ficha";
+        $valor2 = $idFicha;
+
+        $respuesta = ModeloFichas::mdlCambiarEstadoFicha($tabla, $item1, $valor1, $item2, $valor2);
+
+        return $respuesta;
+    }
 }
