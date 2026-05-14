@@ -141,6 +141,96 @@ class ControladorUsuarios{
         return $respuesta;
     }
 
+    // ************************************
+    // EDITAR USUARIO
+    // ************************************
+    public function ctrEditarUsuario(){
+        if (isset($_POST["editarDocumento"]) && isset($_POST["idUsuarioEditar"])) {
+            if (
+                preg_match('/^[0-9]+$/', $_POST["editarDocumento"]) &&
+                preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚÑñ ]+$/', $_POST["editarNombre"]) &&
+                preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚÑñ ]+$/', $_POST["editarApellido"])
+            ) {
+                $tabla = "usuarios";
+
+                if ($_POST["editarPassword"] != "") {
+                    if (preg_match('/^[a-zA-Z0-9]+$/', $_POST["editarPassword"])) {
+                        $passEncriptado = crypt($_POST["editarPassword"], '$2a$07$asdfsdvafdsgf04sdfsadfGAiADeveloper$');
+                    } else {
+                        echo "<script>
+                            Swal.fire({
+                                icon: 'error',
+                                title: '¡La contraseña no puede ir vacía o llevar caracteres especiales!',
+                                showConfirmButton: true,
+                                confirmButtonText: 'Cerrar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location = 'Usuarios';
+                                }
+                            });
+                        </script>";
+                        return;
+                    }
+                } else {
+                    $passEncriptado = $_POST["passwordActual"];
+                }
+
+                $fichaId = null;
+                if (strtoupper($_POST["editarRol"]) == "APRENDIZ" && isset($_POST["editarFicha"]) && $_POST["editarFicha"] != "") {
+                    $fichaId = $_POST["editarFicha"];
+                }
+
+                $datos = array(
+                    "id" => $_POST["idUsuarioEditar"],
+                    "tipoDocumento" => $_POST["editarTipoDocumento"],
+                    "documentoId" => $_POST["editarDocumento"],
+                    "nombres" => $_POST["editarNombre"],
+                    "apellidos" => $_POST["editarApellido"],
+                    "correo" => $_POST["editarCorreo"],
+                    "fechaNacimiento" => $_POST["editarFechaNacimiento"],
+                    "rol" => $_POST["editarRol"],
+                    "password" => $passEncriptado,
+                    "ficha_id" => $fichaId
+                );
+
+                $respuesta = ModeloUsuarios::mdlEditarUsuario($tabla, $datos);
+
+                if ($respuesta == "ok") {
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'El usuario ha sido editado correctamente',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Aceptar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location = 'Usuarios';
+                            }
+                        });
+                    </script>";
+                } else {
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: '¡Error al editar el usuario!',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Cerrar'
+                        });
+                    </script>";
+                }
+            } else {
+                echo "<script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: '¡El nombre o apellidos no pueden ir vacíos o llevar caracteres especiales!',
+                        showConfirmButton: true,
+                        confirmButtonText: 'Cerrar'
+                    });
+                </script>";
+            }
+        }
+    }
+
 
     // ************************************
     // ACTUALIZAR ESTADO DE UN USUARIO

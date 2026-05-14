@@ -66,7 +66,7 @@
                                 echo "</td>";
                                 echo "<td>";
                                 echo '<div class="btn-group">
-                            <button class="btn btn-sm btn-outline-light" data-toggle="modal" data-target="#modal-editarUsuario"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-light btnEditarUsuario" data-idUsuario="' . $usuario["id"] . '" data-toggle="modal" data-target="#modal-editarUsuario"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-sm btn-outline-light" data-toggle="modal" data-target="#modal-consultarUsuario"><i class="fas fa-eye"></i></button>
                           </div>
                         </td>';
@@ -173,11 +173,11 @@ AGREGAR USUARIO   -->
                           <input type="text" class="form-control" list="listaFichas" id="inputFicha" placeholder="Escriba o seleccione una ficha...">
                           <datalist id="listaFichas">
                               <?php
-                              $fichas = ControladorUsuarios::ctrListarFichas();
-                              foreach ($fichas as $ficha) {
-                                  echo '<option data-id="'.$ficha["id_ficha"].'" data-programa="'.$ficha["programa_ficha"].'" value="'.$ficha["codigo"].'"></option>';
-                              }
-                              ?>
+                                $fichas = ControladorUsuarios::ctrListarFichas();
+                                foreach ($fichas as $ficha) {
+                                    echo '<option data-id="' . $ficha["id_ficha"] . '" data-programa="' . $ficha["programa_ficha"] . '" value="' . $ficha["codigo"] . '"></option>';
+                                }
+                                ?>
                           </datalist>
                           <input type="hidden" name="nuevaFicha" id="nuevaFicha">
                       </div>
@@ -219,12 +219,108 @@ EDITAR USUARIO   -->
                   </button>
               </div>
               <div class="modal-body">
-                  <p>Contenido</p>
+                  <form action="" method="post">
+                      <input type="hidden" name="idUsuarioEditar" id="idUsuarioEditar">
+
+                      <div class="form-group">
+                          <div class="row">
+                              <div class="col-md-5">
+                                  <select class="form-control" name="editarTipoDocumento" id="editarTipoDocumento" required>
+                                      <option value="">Tipo...</option>
+                                      <option value="TI">TI</option>
+                                      <option value="CC">CC</option>
+                                      <option value="CE">CE</option>
+                                      <option value="PPT">PPT</option>
+                                  </select>
+                              </div>
+                              <div class="input-group col-md-7">
+                                  <div class="input-group-prepend">
+                                      <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                  </div>
+                                  <input type="text" class="form-control" name="editarDocumento" id="editarDocumento" placeholder="Numero identificación" readonly required>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fas fa-user"></i></span>
+                          </div>
+                          <input type="text" class="form-control" name="editarNombre" id="editarNombre" placeholder="Nombre" required>
+                      </div>
+
+                      <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fas fa-user"></i></span>
+                          </div>
+                          <input type="text" class="form-control" name="editarApellido" id="editarApellido" placeholder="Apellidos" required>
+                      </div>
+
+                      <label for="">Fecha de nacimiento</label>
+                      <div class="input-group mb-3 date">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                          </div>
+                          <input type="date" class="form-control" name="editarFechaNacimiento" id="editarFechaNacimiento" placeholder="Fecha de nacimiento" required>
+                      </div>
+
+                      <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                          </div>
+                          <input type="email" class="form-control" name="editarCorreo" id="editarCorreo" placeholder="Correo" required>
+                      </div>
+
+                      <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                          </div>
+                          <select class="form-control" name="editarRol" id="editarRol" required>
+                              <option value="">Seleccionar rol...</option>
+                              <option value="BIENESTAR">Bienestar</option>
+                              <option value="FINANCIERA">Financiera</option>
+                              <option value="ADMIN">ADMIN</option>
+                              <option value="APRENDIZ">Aprendiz</option>
+                              <option value="GESTORA">Gestora</option>
+                          </select>
+                      </div>
+
+                      <div class="input-group mb-3" id="divEditarFicha" style="display: none;">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fas fa-list-ol"></i></span>
+                          </div>
+                          <input type="text" class="form-control" list="listaFichas" id="inputEditarFicha" placeholder="Escriba o seleccione una ficha...">
+                          <input type="hidden" name="editarFicha" id="editarFicha">
+                      </div>
+
+                      <div class="input-group mb-3" id="divDescripcionEditarFicha" style="display: none;">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fas fa-info-circle"></i></span>
+                          </div>
+                          <input type="text" class="form-control" id="descripcionEditarFicha" placeholder="Programa de formación" readonly>
+                      </div>
+
+                      <div class="form-group">
+                          <label for="">Para cambiar la contraseña escriba una nueva, de lo contrario déjelo en blanco</label>
+                          <div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                              </div>
+                              <input type="password" class="form-control" name="editarPassword" placeholder="Nueva contraseña">
+                              <input type="hidden" id="passwordActual" name="passwordActual">
+                          </div>
+                      </div>
+
               </div>
               <div class="modal-footer justify-content-between">
                   <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                  <button type="button" class="btn btn-primary">Guardar</button>
+                  <button type="submit" class="btn btn-primary">Guardar cambios</button>
               </div>
+              <?php
+                $editarUsuario = new ControladorUsuarios();
+                $editarUsuario->ctrEditarUsuario();
+                ?>
+              </form>
           </div>
           <!-- /.modal-content -->
       </div>

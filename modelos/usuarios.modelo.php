@@ -72,6 +72,31 @@ class ModeloUsuarios
     }
 
     // ************************************
+    // EDITAR USUARIO EN LA BD
+    // ************************************    
+    static public function mdlEditarUsuario($tabla, $datos)
+    {
+        $stmt = Conexion::conectar()->prepare("UPDATE $tabla SET tipo_documento = :tipoDocumento, documento_id = :documentoId, nombres = :nombres, apellidos = :apellidos, correo = :correo, fecha_nacimiento = :fechaNacimiento, rol = :rol, password = :password, ficha_id = :ficha_id WHERE id = :id");
+        
+        $stmt->bindParam(":tipoDocumento", $datos["tipoDocumento"], PDO::PARAM_STR);
+        $stmt->bindParam(":documentoId", $datos["documentoId"], PDO::PARAM_STR);
+        $stmt->bindParam(":nombres", $datos["nombres"], PDO::PARAM_STR);
+        $stmt->bindParam(":apellidos", $datos["apellidos"], PDO::PARAM_STR);
+        $stmt->bindParam(":correo", $datos["correo"], PDO::PARAM_STR);
+        $stmt->bindParam(":fechaNacimiento", $datos["fechaNacimiento"], PDO::PARAM_STR);
+        $stmt->bindParam(":rol", $datos["rol"], PDO::PARAM_STR);
+        $stmt->bindParam(":password", $datos["password"], PDO::PARAM_STR);
+        $stmt->bindParam(":ficha_id", $datos["ficha_id"], PDO::PARAM_INT);
+        $stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+
+        if ($stmt->execute()) {
+            return "ok";
+        } else {
+            return "error";
+        }
+    }
+
+    // ************************************
     // ACTUALIZAR ESTADO DE UN USUARIO
     // ************************************
     static public function mdlCambiarEstadoUsuario($tabla, $idUsuario, $estado)

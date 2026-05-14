@@ -29,6 +29,15 @@ class AjaxUsuarios
         $respuesta = ControladorUsuarios::ctrCambiarEstadoUsuario($idUsuario, $estado);
         echo $respuesta ? 'ok' : 'error';
     }
+    public $idUsuario; // usado para editar usuario
+
+    public function ajaxEditarUsuario()
+    {
+        $item = "id";
+        $valor = $this->idUsuario;
+        $respuesta = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
+        echo json_encode($respuesta);
+    }
 }
 
 if (isset($_POST["nuevoDocumento"])) {
@@ -42,4 +51,10 @@ if (isset($_POST["idUsuarioEstado"]) && isset($_POST["estado"])) {
     $actUsuario->idUsuarioEstado = $_POST["idUsuarioEstado"];
     $actUsuario->estado = $_POST["estado"];
     $actUsuario->ajaxCambiarEstado();
+}
+
+if (isset($_POST["idUsuario"])) {
+    $editar = new AjaxUsuarios();
+    $editar->idUsuario = $_POST["idUsuario"];
+    $editar->ajaxEditarUsuario();
 }
