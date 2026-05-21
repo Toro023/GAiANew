@@ -108,6 +108,7 @@
           $_GET["ruta"] == "inicio" ||
           $_GET["ruta"] == "puntuacion" ||
           $_GET["ruta"] == "apoyos" ||
+          $_GET["ruta"] == "convocatorias" ||
           $_GET["ruta"] == "sedes" ||
           $_GET["ruta"] == "fichas" ||
           $_GET["ruta"] == "identificacion" ||
@@ -146,6 +147,7 @@
   <script src="vistas/js/sedes.js"></script>
   <script src="vistas/js/fichas.js"></script>
   <script src="vistas/js/apoyos.js"></script>
+  <script src="vistas/js/convocatorias.js"></script>
   <!-- <script src="vistas/js/styles.css"></script> -->
 
 

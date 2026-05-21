@@ -43,6 +43,13 @@
               </li>
 
               <li class="nav-item">
+                <a href="convocatorias" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Convocatoria</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
                 <a href="./sedes" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Sedes</p>
