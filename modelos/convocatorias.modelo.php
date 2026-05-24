@@ -147,4 +147,17 @@ class ModeloConvocatorias {
             return "error: " . $e->getMessage();
         }
     }
+
+    // ==============================================
+    // LISTAR TODAS LAS CONVOCATORIAS ABIERTAS
+    // ==============================================
+    static public function mdlListarConvocatoriasActivas($tablaConvocatorias, $tablaApoyos) {
+        $stmt = Conexion::conectar()->prepare("SELECT c.*, a.descripcion_apoyo, a.informacion_apoyo, a.apoyo_icono 
+                                               FROM $tablaConvocatorias c 
+                                               INNER JOIN $tablaApoyos a ON c.apoyo_id = a.id_apoyo 
+                                               WHERE c.estado_en_convocatoria = 'ABIERTA' 
+                                               ORDER BY c.fecha_fin ASC");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }

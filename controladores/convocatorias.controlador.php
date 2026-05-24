@@ -103,4 +103,15 @@ class ControladorConvocatorias {
         $respuesta = ModeloConvocatorias::mdlMostrarBaremo($valor);
         return $respuesta;
     }
+
+    // ==============================================
+    // LISTAR CONVOCATORIAS ABIERTAS
+    // ==============================================
+    static public function ctrListarConvocatoriasActivas() {
+        $tablaConvocatorias = "convocatorias";
+        $tablaApoyos = "apoyos";
+        
+        $respuesta = ModeloConvocatorias::mdlListarConvocatoriasActivas($tablaConvocatorias, $tablaApoyos);
+        return $respuesta;
+    }    
 }

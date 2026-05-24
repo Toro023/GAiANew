@@ -148,6 +148,7 @@
   <script src="vistas/js/fichas.js"></script>
   <script src="vistas/js/apoyos.js"></script>
   <script src="vistas/js/convocatorias.js"></script>
+  <script src="vistas/js/inscripciones.js"></script>
   <!-- <script src="vistas/js/styles.css"></script> -->
 
 
