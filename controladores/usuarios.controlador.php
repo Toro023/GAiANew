@@ -41,6 +41,22 @@ class ControladorUsuarios{
                         echo  "<br><div class='alert alert-warning'>El usuario esta inactivo</div>";
                         return;
                     }                   
+                } else {
+                    // El usuario no existe en la base de datos
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Usuario no registrado',
+                            text: 'El documento ingresado no existe en el sistema. Por favor, regístrese como nuevo usuario.',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Registrarse'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $('#modal-registroAprendiz').modal('show');
+                            }
+                        });
+                    </script>";
+                    return;
                 }
 
             }    
@@ -134,6 +150,68 @@ class ControladorUsuarios{
         
 
 
+              }
+        }  // fin del isset
+    }
+
+    // ************************************
+    // AGREGAR APRENDIZ DESDE EL LOGIN
+    // ************************************
+    public function ctrRegistroAprendiz(){
+        
+        if (isset($_POST["nuevoTipoDocumento"])  && 
+            isset($_POST["nuevoDocumento"])  && 
+            isset($_POST["nuevoNombre"])  && 
+            isset($_POST["nuevoApellido"])  && 
+            isset($_POST["nuevoCorreo"])  && 
+            isset($_POST["nuevoFechaNacimiento"])  && 
+            isset($_POST["nuevoRol"]))
+            {
+                if (
+                preg_match('/^[0-9]+$/', $_POST["nuevoDocumento"]) &&
+                preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚÑñ ]+$/', $_POST["nuevoNombre"]) &&
+                preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚÑñ ]+$/', $_POST["nuevoApellido"])
+              ) {
+
+                $tabla="usuarios";
+
+                $passEncriptado=crypt($_POST["nuevoDocumento"],'$2a$07$asdfsdvafdsgf04sdfsadfGAiADeveloper$');
+
+                $fichaId = null;
+                if ($_POST["nuevoRol"] == "Aprendiz" && isset($_POST["nuevaFicha"])) {
+                    $fichaId = $_POST["nuevaFicha"];
+                }
+
+                $datos = array(
+                  "tipoDocumento" => $_POST["nuevoTipoDocumento"],
+                  "documentoId" => $_POST["nuevoDocumento"],
+                  "nombres" => $_POST["nuevoNombre"],
+                  "apellidos" => $_POST["nuevoApellido"],
+                  "correo" => $_POST["nuevoCorreo"],
+                  "fechaNacimiento" => $_POST["nuevoFechaNacimiento"],
+                  "rol" => $_POST["nuevoRol"],
+                  "password"=> $passEncriptado,
+                  "ficha_id" => $fichaId
+                );
+                $respuesta= ModeloUsuarios::mdlAgregarUsuario($tabla, $datos);
+
+                if($respuesta == "ok"){
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Registro exitoso!',
+                            text: 'Se ha registrado correctamente. Ya puede iniciar sesión.',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Aceptar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location = 'inicio';
+                            }
+                        });
+                    </script>";
+                }else{
+                    echo "<br><div class='alert alert-danger'>Error al agregar el usuario</div>";
+                }
               }
         }  // fin del isset
     }
