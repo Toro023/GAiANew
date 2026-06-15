@@ -11,6 +11,14 @@ class ControladorFinanciera {
     }
 
     /*=============================================
+    MOSTRAR BENEFICIARIO INDIVIDUAL POR ID DE INSCRIPCION
+    =============================================*/
+    static public function ctrMostrarBeneficiario($idInscripcion) {
+        $respuesta = ModeloFinanciera::mdlMostrarBeneficiario($idInscripcion);
+        return $respuesta;
+    }
+
+    /*=============================================
     LISTAR CONVOCATORIAS CON BENEFICIARIOS
     =============================================*/
     static public function ctrListarConvocatoriasFinanciera() {

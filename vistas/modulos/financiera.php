@@ -172,37 +172,14 @@ $pendientesBancarios = ControladorFinanciera::ctrListarPendientesBancarios();
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="btn-group">
-                                                        <?php
-                                                        // Dividir nombres y apellidos
-                                                        $nombresParts = explode(" ", trim($ben["nombres"]));
-                                                        $primerNombre = $nombresParts[0];
-                                                        $segundoNombre = count($nombresParts) > 1 ? implode(" ", array_slice($nombresParts, 1)) : "";
-
-                                                        $apellidosParts = explode(" ", trim($ben["apellidos"]));
-                                                        $primerApellido = $apellidosParts[0];
-                                                        $segundoApellido = count($apellidosParts) > 1 ? implode(" ", array_slice($apellidosParts, 1)) : "";
-                                                        ?>
                                                         <button class="btn btn-sm btn-outline-light btnFormatoTerceros mr-1"
-                                                            data-primer-nombre="<?php echo $primerNombre; ?>"
-                                                            data-segundo-nombre="<?php echo $segundoNombre; ?>"
-                                                            data-primer-apellido="<?php echo $primerApellido; ?>"
-                                                            data-segundo-apellido="<?php echo $segundoApellido; ?>"
-                                                            data-tipo-documento="<?php echo $ben["tipo_documento"]; ?>"
-                                                            data-identificacion="<?php echo $ben["identificacion"]; ?>"
-                                                            data-correo="<?php echo $ben["correo"]; ?>"
-                                                            data-banco="<?php echo $ben["banco"]; ?>"
-                                                            data-numero-cuenta="<?php echo $ben["numero_cuenta"]; ?>"
+                                                            data-idInscripcion="<?php echo $ben["inscripcion_id"]; ?>"
                                                             data-toggle="modal" data-target="#modal-formatoTerceros"
                                                             title="Formato de Terceros">
                                                             <i class="fas fa-id-card"></i>
                                                         </button>
                                                         <button class="btn btn-sm btn-outline-light btnValoresComprometer mr-1"
-                                                            data-consecutivo="<?php echo ($key + 1); ?>"
-                                                            data-identificacion="<?php echo $ben["identificacion"]; ?>"
-                                                            data-aprendiz="<?php echo $ben["aprendiz"]; ?>"
-                                                            data-meses="<?php echo $ben["meses_beneficio"]; ?>"
-                                                            data-banco="<?php echo $ben["banco"]; ?>"
-                                                            data-numero-cuenta="<?php echo $ben["numero_cuenta"]; ?>"
+                                                            data-idInscripcion="<?php echo $ben["inscripcion_id"]; ?>"
                                                             data-toggle="modal" data-target="#modal-valoresComprometer"
                                                             title="Valores a Comprometer">
                                                             <i class="fas fa-dollar-sign"></i>

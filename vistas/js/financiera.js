@@ -250,40 +250,74 @@ $(document).ready(function() {
     // MOSTRAR DETALLE FORMATO DE TERCEROS EN MODAL
     // =======================================================
     $(document).on("click", ".btnFormatoTerceros", function() {
-        const datos = $(this).data();
+        let idInscripcion = $(this).attr("data-idInscripcion");
+        let datos = new FormData();
+        datos.append("idInscripcion", idInscripcion);
 
-        $("#terPrimerNombre").val(datos.primerNombre || "");
-        $("#terSegundoNombre").val(datos.segundoNombre || "");
-        $("#terPrimerApellido").val(datos.primerApellido || "");
-        $("#terSegundoApellido").val(datos.segundoApellido || "");
-        $("#terTipoDocumento").val(datos.tipoDocumento || "");
-        $("#terNumeroDocumento").val(datos.identificacion || "");
-        $("#terCorreo").val(datos.correo || "");
-        $("#terBanco").val(datos.banco || "");
-        $("#terNumeroCuenta").val(datos.numeroCuenta || "");
+        $.ajax({
+            url: "ajax/financiera.ajax.php",
+            method: "POST",
+            data: datos,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            success: function(respuesta) {
+                let nombresParts = (respuesta["nombres"] || "").trim().split(" ");
+                let primerNombre = nombresParts[0] || "";
+                let segundoNombre = nombresParts.slice(1).join(" ") || "";
 
-        // Campos no disponibles en BD (vacíos por defecto)
-        $("#terTelefono").val("");
-        $("#terDireccion").val("");
-        $("#terCiudad").val("");
-        $("#terCodigoCiudad").val("");
-        $("#terDepartamento").val("");
-        $("#terCodigoDepartamento").val("");
+                let apellidosParts = (respuesta["apellidos"] || "").trim().split(" ");
+                let primerApellido = apellidosParts[0] || "";
+                let segundoApellido = apellidosParts.slice(1).join(" ") || "";
+
+                $("#terPrimerNombre").val(primerNombre);
+                $("#terSegundoNombre").val(segundoNombre);
+                $("#terPrimerApellido").val(primerApellido);
+                $("#terSegundoApellido").val(segundoApellido);
+                $("#terTipoDocumento").val(respuesta["tipo_documento"] || "");
+                $("#terNumeroDocumento").val(respuesta["identificacion"] || "");
+                $("#terCorreo").val(respuesta["correo"] || "");
+                $("#terBanco").val(respuesta["banco"] || "");
+                $("#terNumeroCuenta").val(respuesta["numero_cuenta"] || "");
+
+                // Campos no disponibles en BD (vacíos por defecto)
+                $("#terTelefono").val("");
+                $("#terDireccion").val("");
+                $("#terCiudad").val("");
+                $("#terCodigoCiudad").val("");
+                $("#terDepartamento").val("");
+                $("#terCodigoDepartamento").val("");
+            }
+        });
     });
     // =======================================================
     // MOSTRAR VALORES A COMPROMETER EN MODAL
     // =======================================================
     $(document).on("click", ".btnValoresComprometer", function() {
-        const datos = $(this).data();
+        let idInscripcion = $(this).attr("data-idInscripcion");
+        let datos = new FormData();
+        datos.append("idInscripcion", idInscripcion);
 
-        $("#compNumeroDocumento").val(datos.identificacion || "");
-        $("#compNombreAprendiz").val(datos.aprendiz || "");
-        $("#compTiempo").val(datos.meses ? datos.meses + " meses" : "");
-        $("#compBanco").val(datos.banco || "");
-        $("#compNumeroCuenta").val(datos.numeroCuenta || "");
+        $.ajax({
+            url: "ajax/financiera.ajax.php",
+            method: "POST",
+            data: datos,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            success: function(respuesta) {
+                $("#compNumeroDocumento").val(respuesta["identificacion"] || "");
+                $("#compNombreAprendiz").val(respuesta["aprendiz"] || "");
+                $("#compTiempo").val(respuesta["meses_beneficio"] ? respuesta["meses_beneficio"] + " meses" : "");
+                $("#compBanco").val(respuesta["banco"] || "");
+                $("#compNumeroCuenta").val(respuesta["numero_cuenta"] || "");
 
-        // Campo no disponible en BD (vacío por defecto)
-        $("#compValorRp").val("");
+                // Campo no disponible en BD (vacío por defecto)
+                $("#compValorRp").val("");
+            }
+        });
     });
 
 });
