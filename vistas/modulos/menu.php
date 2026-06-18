@@ -198,6 +198,48 @@
                </div>
              </div>
 
+             <!-- CONTACTO: DIRECCION -->
+             <div class="input-group mb-3">
+                 <div class="input-group-prepend">
+                     <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                 </div>
+                 <input type="text" class="form-control" id="editarDireccionPerfil" name="editarDireccionPerfil" placeholder="Dirección de residencia">
+             </div>
+
+             <!-- CONTACTO: TELEFONO -->
+             <div class="input-group mb-3">
+                 <div class="input-group-prepend">
+                     <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                 </div>
+                 <input type="text" class="form-control" id="editarTelefonoPerfil" name="editarTelefonoPerfil" placeholder="Teléfono de contacto">
+             </div>
+
+             <!-- CONTACTO: DEPARTAMENTO -->
+             <div class="input-group mb-3">
+                 <div class="input-group-prepend">
+                     <span class="input-group-text"><i class="fas fa-map"></i></span>
+                 </div>
+                 <select class="form-control" name="editarDepartamentoPerfil" id="editarDepartamentoPerfil">
+                     <option value="">Seleccionar Departamento</option>
+                     <?php
+                     $departamentos = ModeloUsuarios::mdlObtenerDepartamentos();
+                     foreach ($departamentos as $dep) {
+                         echo '<option value="' . $dep["codigo_dep"] . '">' . $dep["nombre"] . '</option>';
+                     }
+                     ?>
+                 </select>
+             </div>
+
+             <!-- CONTACTO: CIUDAD -->
+             <div class="input-group mb-3">
+                 <div class="input-group-prepend">
+                     <span class="input-group-text"><i class="fas fa-city"></i></span>
+                 </div>
+                 <select class="form-control" name="editarCiudadPerfil" id="editarCiudadPerfil">
+                     <option value="">Seleccionar Municipio/Ciudad</option>
+                 </select>
+             </div>
+
                <div class="form-group">
                  <div class="panel">CAMBIAR FOTO PERFIL</div>
                  <div class="custom-file mb-2">
