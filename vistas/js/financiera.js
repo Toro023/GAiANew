@@ -420,4 +420,77 @@ $(document).ready(function() {
         });
     });
 
+    // =======================================================
+    // DESCARGAR EXCEL DE VALORES A COMPROMETER
+    // =======================================================
+    $(document).on("click", "#btnDescargarExcelValores", function() {
+        let numeroDocumento = $("#compNumeroDocumento").val() || "";
+        let nombreAprendiz = $("#compNombreAprendiz").val() || "";
+        let valorRp = $("#compValorRp").val() || "";
+        let tiempo = $("#compTiempo").val() || "";
+        let banco = $("#compBanco").val() || "";
+        let numeroCuenta = $("#compNumeroCuenta").val() || "";
+
+        let excelTemplate = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+        <meta charset="UTF-8">
+        <!--[if gte mso 9]>
+        <xml>
+         <x:ExcelWorkbook>
+          <x:ExcelWorksheets>
+           <x:ExcelWorksheet>
+            <x:Name>Valores a Comprometer</x:Name>
+            <x:WorksheetOptions>
+             <x:DisplayGridlines/>
+            </x:WorksheetOptions>
+           </x:ExcelWorksheet>
+          </x:ExcelWorksheets>
+         </x:ExcelWorkbook>
+        </xml>
+        <![endif]-->
+        </head>
+        <body>
+        <table border="1">
+          <tr style="background-color: #198754; color: white; font-weight: bold;">
+            <th colspan="2" style="font-size: 14pt; padding: 10px; text-align: center;">VALORES A COMPROMETER</th>
+          </tr>
+          <tr>
+            <td style="font-weight: bold; background-color: #f2f2f2; width: 200px;">Número Documento</td>
+            <td style="text-align: left; mso-number-format: '\\@';">${numeroDocumento}</td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold; background-color: #f2f2f2;">Nombre del Aprendiz</td>
+            <td style="width: 300px;">${nombreAprendiz}</td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold; background-color: #f2f2f2;">Valor RP</td>
+            <td style="text-align: left;">${valorRp}</td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold; background-color: #f2f2f2;">Tiempo</td>
+            <td>${tiempo}</td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold; background-color: #f2f2f2;">Banco</td>
+            <td>${banco}</td>
+          </tr>
+          <tr>
+            <td style="font-weight: bold; background-color: #f2f2f2;">Número de Cuenta</td>
+            <td style="text-align: left; mso-number-format: '\\@';">${numeroCuenta}</td>
+          </tr>
+        </table>
+        </body>
+        </html>
+        `;
+
+        let blob = new Blob([excelTemplate], { type: "application/vnd.ms-excel;charset=utf-8;" });
+        let link = document.createElement("a");
+        let url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = `Valores_Comprometer_${numeroDocumento}.xls`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
 });
