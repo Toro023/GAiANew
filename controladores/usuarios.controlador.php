@@ -32,7 +32,7 @@ class ControladorUsuarios{
                             $_SESSION["rol"] = $respuesta["rol"];
                             $_SESSION["ficha_id"] = $respuesta["ficha_id"];
                             $_SESSION["foto"] = $respuesta["foto"];
-                            echo "<script>window.location = 'inicio';</script>";
+                            echo "<script>window.location = 'identificacion';</script>";
                         } else{
                         // var_dump($respuesta);
                         echo  "<br><div class='alert alert-danger'>Usuario o contraseña incorrecto</div>";
