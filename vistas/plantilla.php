@@ -118,7 +118,8 @@
           $_GET["ruta"] == "inscripciones" ||
           $_GET["ruta"] == "inscripciones2" ||
           $_GET["ruta"] == "Usuarios" ||
-          $_GET["ruta"] == "Salir"
+          $_GET["ruta"] == "historialRelevos" ||
+          $_GET["ruta"] == "Salir" 
 
         ) {
           include "modulos/" . $_GET["ruta"] . ".php";
