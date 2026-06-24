@@ -170,8 +170,14 @@
              <span aria-hidden="true">&times;</span>
            </button>
          </div>
-         <div class="modal-body">
-           <form action="" method="post" enctype="multipart/form-data">
+         <div class="modal-body">           <form action="" method="post" enctype="multipart/form-data">
+             <?php
+             $contactoPerfil = ModeloUsuarios::mdlObtenerContactoUsuario($_SESSION["id"]);
+             $dirP = $contactoPerfil ? $contactoPerfil["direccion"] : "";
+             $telP = $contactoPerfil ? $contactoPerfil["telefono"] : "";
+             $depP = $contactoPerfil ? $contactoPerfil["codigo_dep"] : "";
+             $ciuP = $contactoPerfil ? $contactoPerfil["codigo_ciu"] : "";
+             ?>
 
              <input type="hidden" name="idPerfil" value="<?php echo $_SESSION["id"]; ?>">
              <input type="hidden" name="fotoActual" value="<?php echo $_SESSION["foto"]; ?>">
@@ -207,7 +213,7 @@
                  <div class="input-group-prepend">
                      <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                  </div>
-                 <input type="text" class="form-control" id="editarDireccionPerfil" name="editarDireccionPerfil" placeholder="Dirección de residencia">
+                 <input type="text" class="form-control" id="editarDireccionPerfil" name="editarDireccionPerfil" placeholder="Dirección de residencia" value="<?php echo $dirP; ?>">
              </div>
 
              <!-- CONTACTO: TELEFONO -->
@@ -215,7 +221,7 @@
                  <div class="input-group-prepend">
                      <span class="input-group-text"><i class="fas fa-phone"></i></span>
                  </div>
-                 <input type="text" class="form-control" id="editarTelefonoPerfil" name="editarTelefonoPerfil" placeholder="Teléfono de contacto">
+                 <input type="text" class="form-control" id="editarTelefonoPerfil" name="editarTelefonoPerfil" placeholder="Teléfono de contacto" value="<?php echo $telP; ?>">
              </div>
 
              <!-- CONTACTO: DEPARTAMENTO -->
@@ -228,7 +234,8 @@
                      <?php
                      $departamentos = ModeloUsuarios::mdlObtenerDepartamentos();
                      foreach ($departamentos as $dep) {
-                         echo '<option value="' . $dep["codigo_dep"] . '">' . $dep["nombre"] . '</option>';
+                         $selected = ($dep["codigo_dep"] == $depP) ? "selected" : "";
+                         echo '<option value="' . $dep["codigo_dep"] . '" '.$selected.'>' . $dep["nombre"] . '</option>';
                      }
                      ?>
                  </select>
@@ -241,9 +248,17 @@
                  </div>
                  <select class="form-control" name="editarCiudadPerfil" id="editarCiudadPerfil">
                      <option value="">Seleccionar Municipio/Ciudad</option>
+                     <?php
+                     if($depP != ""){
+                         $ciudades = ModeloUsuarios::mdlObtenerCiudades($depP);
+                         foreach ($ciudades as $ciu) {
+                             $selected = ($ciu["codigo_ciu"] == $ciuP) ? "selected" : "";
+                             echo '<option value="' . $ciu["codigo_ciu"] . '" '.$selected.'>' . $ciu["nombre"] . '</option>';
+                         }
+                     }
+                     ?>
                  </select>
              </div>
-
                <div class="form-group">
                  <div class="panel">CAMBIAR FOTO PERFIL</div>
                  <div class="custom-file mb-2">

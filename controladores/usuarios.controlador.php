@@ -132,21 +132,16 @@ class ControladorUsuarios{
                   "ficha_id" => $fichaId,
                   "foto" => $ruta
                 );
-                $respuesta= ModeloUsuarios::mdlAgregarUsuario($tabla, $datos);
+                $contacto = array(
+                    "direccion" => isset($_POST["nuevaDireccion"]) ? $_POST["nuevaDireccion"] : "",
+                    "telefono" => isset($_POST["nuevoTelefono"]) ? $_POST["nuevoTelefono"] : "",
+                    "codigo_dep" => isset($_POST["nuevoDepartamento"]) ? $_POST["nuevoDepartamento"] : "",
+                    "codigo_ciu" => isset($_POST["nuevaCiudad"]) ? $_POST["nuevaCiudad"] : ""
+                );
+
+                $respuesta= ModeloUsuarios::mdlAgregarUsuario($tabla, $datos, $contacto);
 
                 if($respuesta == "ok"){
-                    $usuarioCreado = ModeloUsuarios::mdlMostrarUsuarios("usuarios", "documento_id", $_POST["nuevoDocumento"]);
-                    if ($usuarioCreado) {
-                        $contacto = array(
-                            "direccion" => isset($_POST["nuevaDireccion"]) ? $_POST["nuevaDireccion"] : "",
-                            "telefono" => isset($_POST["nuevoTelefono"]) ? $_POST["nuevoTelefono"] : "",
-                            "codigo_dep" => isset($_POST["nuevoDepartamento"]) ? $_POST["nuevoDepartamento"] : "",
-                            "codigo_ciu" => isset($_POST["nuevaCiudad"]) ? $_POST["nuevaCiudad"] : ""
-                        );
-                        if(strtoupper($_POST["nuevoRol"]) == "APRENDIZ" || (!empty($contacto["direccion"]) && !empty($contacto["codigo_dep"]))) {
-                            ModeloUsuarios::mdlGuardarContacto($usuarioCreado["id"], $contacto);
-                        }
-                    }
 
                     echo "<script>
                         Swal.fire({
@@ -163,6 +158,16 @@ class ControladorUsuarios{
                         
                     </script>";
                     // echo "<br><div class='alert alert-success'>El usuario ha sido registrado correctamente</div>";
+                }else if($respuesta == "duplicate"){
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: '¡Error!',
+                            text: 'El documento o correo ya se encuentra registrado.',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Aceptar'
+                        });
+                    </script>";
                 }else{
                     echo "<br><div class='alert alert-danger'>Error al agregar el usuario</div>";
                 }
@@ -219,21 +224,16 @@ class ControladorUsuarios{
                   "ficha_id" => $fichaId,
                   "foto" => $ruta
                 );
-                $respuesta= ModeloUsuarios::mdlAgregarUsuario($tabla, $datos);
+                $contacto = array(
+                    "direccion" => isset($_POST["nuevaDireccion"]) ? $_POST["nuevaDireccion"] : "",
+                    "telefono" => isset($_POST["nuevoTelefono"]) ? $_POST["nuevoTelefono"] : "",
+                    "codigo_dep" => isset($_POST["nuevoDepartamento"]) ? $_POST["nuevoDepartamento"] : "",
+                    "codigo_ciu" => isset($_POST["nuevaCiudad"]) ? $_POST["nuevaCiudad"] : ""
+                );
+                
+                $respuesta= ModeloUsuarios::mdlAgregarUsuario($tabla, $datos, $contacto);
 
                 if($respuesta == "ok"){
-                    $usuarioCreado = ModeloUsuarios::mdlMostrarUsuarios("usuarios", "documento_id", $_POST["nuevoDocumento"]);
-                    if ($usuarioCreado) {
-                        $contacto = array(
-                            "direccion" => isset($_POST["nuevaDireccion"]) ? $_POST["nuevaDireccion"] : "",
-                            "telefono" => isset($_POST["nuevoTelefono"]) ? $_POST["nuevoTelefono"] : "",
-                            "codigo_dep" => isset($_POST["nuevoDepartamento"]) ? $_POST["nuevoDepartamento"] : "",
-                            "codigo_ciu" => isset($_POST["nuevaCiudad"]) ? $_POST["nuevaCiudad"] : ""
-                        );
-                        if(strtoupper($_POST["nuevoRol"]) == "APRENDIZ" || (!empty($contacto["direccion"]) && !empty($contacto["codigo_dep"]))) {
-                            ModeloUsuarios::mdlGuardarContacto($usuarioCreado["id"], $contacto);
-                        }
-                    }
 
                     echo "<script>
                         Swal.fire({
@@ -246,6 +246,16 @@ class ControladorUsuarios{
                             if (result.isConfirmed) {
                                 window.location = 'inicio';
                             }
+                        });
+                    </script>";
+                }else if($respuesta == "duplicate"){
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: '¡Error al registrarse!',
+                            text: 'El documento o correo ya se encuentra registrado en el sistema.',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Aceptar'
                         });
                     </script>";
                 }else{
@@ -339,9 +349,7 @@ class ControladorUsuarios{
                         "codigo_dep" => isset($_POST["editarDepartamento"]) ? $_POST["editarDepartamento"] : "",
                         "codigo_ciu" => isset($_POST["editarCiudad"]) ? $_POST["editarCiudad"] : ""
                     );
-                    if(strtoupper($_POST["editarRol"]) == "APRENDIZ" || (!empty($contacto["direccion"]) && !empty($contacto["codigo_dep"]))) {
-                        ModeloUsuarios::mdlGuardarContacto($_POST["idUsuarioEditar"], $contacto);
-                    }
+                    ModeloUsuarios::mdlGuardarContacto($_POST["idUsuarioEditar"], $contacto);
 
                     echo "<script>
                         Swal.fire({
@@ -353,6 +361,16 @@ class ControladorUsuarios{
                             if (result.isConfirmed) {
                                 window.location = 'Usuarios';
                             }
+                        });
+                    </script>";
+                } else if ($respuesta == "duplicate") {
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: '¡Error!',
+                            text: 'El correo electrónico editado ya está en uso por otro usuario.',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Cerrar'
                         });
                     </script>";
                 } else {
@@ -435,9 +453,7 @@ class ControladorUsuarios{
                         "codigo_dep" => isset($_POST["editarDepartamentoPerfil"]) ? $_POST["editarDepartamentoPerfil"] : "",
                         "codigo_ciu" => isset($_POST["editarCiudadPerfil"]) ? $_POST["editarCiudadPerfil"] : ""
                     );
-                    if(!empty($contacto["direccion"]) && !empty($contacto["codigo_dep"])) {
-                        ModeloUsuarios::mdlGuardarContacto($_POST["idPerfil"], $contacto);
-                    }
+                    ModeloUsuarios::mdlGuardarContacto($_POST["idPerfil"], $contacto);
 
                     // Actualizar variables de sesion
                     $_SESSION["nombres"] = $_POST["editarNombrePerfil"];
