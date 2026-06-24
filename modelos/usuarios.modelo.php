@@ -217,8 +217,8 @@ class ModeloUsuarios
     {
         $stmt = Conexion::conectar()->prepare("INSERT INTO usuarios_contacto (usuario_id, direccion, telefono, codigo_dep, codigo_ciu) VALUES (:usuario_id, :direccion, :telefono, :codigo_dep, :codigo_ciu) ON DUPLICATE KEY UPDATE direccion = :direccion, telefono = :telefono, codigo_dep = :codigo_dep, codigo_ciu = :codigo_ciu");
         
-        $direccion = !empty($datos["direccion"]) ? $datos["direccion"] : null;
-        $telefono = !empty($datos["telefono"]) ? $datos["telefono"] : null;
+        $direccion = isset($datos["direccion"]) ? $datos["direccion"] : "";
+        $telefono = isset($datos["telefono"]) ? $datos["telefono"] : "";
         $codigo_dep = !empty($datos["codigo_dep"]) ? $datos["codigo_dep"] : null;
         $codigo_ciu = !empty($datos["codigo_ciu"]) ? $datos["codigo_ciu"] : null;
 
