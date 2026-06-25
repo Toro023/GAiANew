@@ -35,7 +35,7 @@ class ModeloFinanciera
             JOIN fichas f ON i.ficha_id = f.id_ficha  
             JOIN convocatorias c ON i.convocatoria_id = c.id
             JOIN apoyos ap ON c.apoyo_id = ap.id_apoyo
-            WHERE c.id = :idConvocatoria
+            WHERE c.id = :idConvocatoria AND a.estado = 'ACTIVO'
             ORDER BY aprendiz ASC
         ");
 
@@ -55,6 +55,7 @@ class ModeloFinanciera
     {
         $stmt = Conexion::conectar()->prepare("
             SELECT 
+                a.id AS asignacion_id,
                 i.id AS inscripcion_id,
                 ap.descripcion_apoyo AS tipo_apoyo,
                 c.id AS nro_convocatoria,
@@ -291,6 +292,91 @@ class ModeloFinanciera
         $stmt = null;
 
         return $resultado;
+    }
+
+    /*=============================================
+    PROCESAR RELEVO DE APRENDIZ
+    =============================================*/
+    static public function mdlProcesarRelevo($idSaliente, $idEntrante, $idAsignacionSaliente, $motivo, $idGestor)
+    {
+        $conexion = Conexion::conectar();
+
+        try {
+            $conexion->beginTransaction();
+
+            // 1. Obtener la asignación del aprendiz saliente
+            $stmtAsig = $conexion->prepare("SELECT meses_otorgados, fecha_inicio_real FROM asignaciones WHERE id = :idAsignacion");
+            $stmtAsig->bindParam(":idAsignacion", $idAsignacionSaliente, PDO::PARAM_INT);
+            $stmtAsig->execute();
+            $asignacionSaliente = $stmtAsig->fetch(PDO::FETCH_ASSOC);
+
+            if (!$asignacionSaliente) {
+                throw new Exception("No se encontró la asignación del aprendiz saliente.");
+            }
+
+            // 2. Calcular meses consumidos y restantes
+            $fechaInicio = new DateTime($asignacionSaliente["fecha_inicio_real"]);
+            $fechaHoy = new DateTime(); // fecha actual
+
+            if ($fechaHoy < $fechaInicio) {
+                $mesesConsumidos = 0;
+            } else {
+                $diferencia = $fechaInicio->diff($fechaHoy);
+                $mesesConsumidos = ($diferencia->y * 12) + $diferencia->m;
+                // Si hay días transcurridos adicionales, se considera el mes actual como iniciado/consumido
+                if ($diferencia->d > 0) {
+                    $mesesConsumidos += 1;
+                }
+            }
+
+            $mesesOtorgados = (int)$asignacionSaliente["meses_otorgados"];
+            $mesesConsumidos = min($mesesConsumidos, $mesesOtorgados);
+            $mesesRestantes = $mesesOtorgados - $mesesConsumidos;
+
+            // 3. Actualizar estado de la inscripción saliente a 'RETIRADO'
+            $stmtUpdSaliente = $conexion->prepare("UPDATE inscripciones SET estado = 'RETIRADO' WHERE id = :idSaliente");
+            $stmtUpdSaliente->bindParam(":idSaliente", $idSaliente, PDO::PARAM_INT);
+            $stmtUpdSaliente->execute();
+
+            // 4. Actualizar estado de la asignación saliente a 'INTERRUMPIDO'
+            $stmtUpdAsigSaliente = $conexion->prepare("UPDATE asignaciones SET estado = 'INTERRUMPIDO' WHERE id = :idAsignacion");
+            $stmtUpdAsigSaliente->bindParam(":idAsignacion", $idAsignacionSaliente, PDO::PARAM_INT);
+            $stmtUpdAsigSaliente->execute();
+
+            // 5. Actualizar estado de la inscripción entrante a 'BENEFICIADO'
+            $stmtUpdEntrante = $conexion->prepare("UPDATE inscripciones SET estado = 'BENEFICIADO' WHERE id = :idEntrante");
+            $stmtUpdEntrante->bindParam(":idEntrante", $idEntrante, PDO::PARAM_INT);
+            $stmtUpdEntrante->execute();
+
+            // 6. Crear asignación para el aprendiz entrante con los meses restantes
+            $stmtNewAsig = $conexion->prepare("INSERT INTO asignaciones (inscripcion_id, meses_otorgados, fecha_inicio_real, estado) 
+                                               VALUES (:inscripcion_entrante_id, :meses_otorgados, :fecha_inicio, 'ACTIVO')");
+            
+            $fechaInicioEntrante = date("Y-m-d");
+            $stmtNewAsig->bindParam(":inscripcion_entrante_id", $idEntrante, PDO::PARAM_INT);
+            $stmtNewAsig->bindParam(":meses_otorgados", $mesesRestantes, PDO::PARAM_INT);
+            $stmtNewAsig->bindParam(":fecha_inicio", $fechaInicioEntrante, PDO::PARAM_STR);
+            $stmtNewAsig->execute();
+
+            // 7. Insertar registro en historial_relevos
+            $stmtHist = $conexion->prepare("INSERT INTO historial_relevos (asignacion_saliente_id, inscripcion_entrante_id, gestor_id, motivo_salida, meses_consumidos, meses_restantes) 
+                                            VALUES (:asignacion_saliente_id, :inscripcion_entrante_id, :gestor_id, :motivo_salida, :meses_consumidos, :meses_restantes)");
+            
+            $stmtHist->bindParam(":asignacion_saliente_id", $idAsignacionSaliente, PDO::PARAM_INT);
+            $stmtHist->bindParam(":inscripcion_entrante_id", $idEntrante, PDO::PARAM_INT);
+            $stmtHist->bindParam(":gestor_id", $idGestor, PDO::PARAM_INT);
+            $stmtHist->bindParam(":motivo_salida", $motivo, PDO::PARAM_STR);
+            $stmtHist->bindParam(":meses_consumidos", $mesesConsumidos, PDO::PARAM_INT);
+            $stmtHist->bindParam(":meses_restantes", $mesesRestantes, PDO::PARAM_INT);
+            $stmtHist->execute();
+
+            $conexion->commit();
+            return "ok";
+
+        } catch (Exception $e) {
+            $conexion->rollBack();
+            return "error";
+        }
     }
 
 }

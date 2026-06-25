@@ -11,6 +11,8 @@ class AjaxFinanciera {
     public $observacion;
     public $idConvocatoria;
     public $documento;
+    public $idInscripcionEntrante;
+    public $idAsignacionSaliente;
 
     // ==============================================
     // APROBAR DOCUMENTO BANCARIO AJAX
@@ -58,6 +60,22 @@ class AjaxFinanciera {
     public function ajaxObtenerContactoAprendiz() {
         $respuesta = ControladorFinanciera::ctrObtenerContactoAprendiz($this->idInscripcion);
         echo json_encode($respuesta);
+    }
+
+    // ==============================================
+    // PROCESAR RELEVO AJAX
+    // ==============================================
+    public function ajaxProcesarRelevo() {
+        if(!isset($_SESSION)){ session_start(); }
+        $idGestor = $_SESSION["id"];
+        $respuesta = ControladorFinanciera::ctrProcesarRelevo(
+            $this->idInscripcion,
+            $this->idInscripcionEntrante,
+            $this->idAsignacionSaliente,
+            $this->observacion,
+            $idGestor
+        );
+        echo json_encode(["status" => $respuesta]);
     }
 
 }
@@ -108,6 +126,15 @@ if (isset($_POST["action"])) {
     if ($_POST["action"] == "obtenerContactoAprendiz" && isset($_POST["id_inscripcion"])) {
         $ajax->idInscripcion = $_POST["id_inscripcion"];
         $ajax->ajaxObtenerContactoAprendiz();
+    }
+
+    // Acción: Procesar Relevo
+    if ($_POST["action"] == "procesarRelevo" && isset($_POST["id_inscripcion_saliente"])) {
+        $ajax->idInscripcion = $_POST["id_inscripcion_saliente"];
+        $ajax->idInscripcionEntrante = $_POST["id_inscripcion_entrante"];
+        $ajax->idAsignacionSaliente = $_POST["id_asignacion_saliente"];
+        $ajax->observacion = $_POST["motivo"];
+        $ajax->ajaxProcesarRelevo();
     }
 
 }

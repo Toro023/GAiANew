@@ -87,4 +87,13 @@ class ControladorFinanciera
         return $respuesta;
     }
 
+    /*=============================================
+    PROCESAR RELEVO DE APRENDIZ
+    =============================================*/
+    static public function ctrProcesarRelevo($idSaliente, $idEntrante, $idAsignacionSaliente, $motivo, $idGestor)
+    {
+        $respuesta = ModeloFinanciera::mdlProcesarRelevo($idSaliente, $idEntrante, $idAsignacionSaliente, $motivo, $idGestor);
+        return $respuesta;
+    }
+
 }

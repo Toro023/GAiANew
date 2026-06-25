@@ -442,6 +442,11 @@ $(document).ready(function () {
                 $("#relevarFichaActual").val(respuesta["codigo_ficha"] || "");
                 $("#relevarMotivo").val("");
 
+                // Guardar los IDs en los inputs ocultos
+                $("#relevarIdInscripcionSaliente").val(idInscripcion);
+                $("#relevarIdAsignacionSaliente").val(respuesta["asignacion_id"] || "");
+                $("#relevarIdInscripcionEntrante").val("");
+
                 // Guardar idInscripcion en el botón de información del saliente
                 $("#btnInfoSaliente").attr("data-idInscripcion", idInscripcion);
 
@@ -479,13 +484,14 @@ $(document).ready(function () {
                                         <button type="button" class="btn btn-xs btn-outline-info mr-1 btnVerContactoRelevo" data-idInscripcion="${sel.inscripcion_id}" title="Información de Contacto">
                                             <i class="fas fa-info-circle"></i>
                                         </button>
-                                        <button type="button" class="btn btn-xs btn-success btnSeleccionarEntrante"
-                                            data-documento="${sel.identificacion}"
-                                            data-nombre="${sel.aprendiz}"
-                                            data-ficha="${sel.codigo_ficha} - ${sel.programa_formacion}"
-                                            title="Seleccionar Aprendiz">
-                                            <i class="fas fa-check"></i>
-                                        </button>
+                                         <button type="button" class="btn btn-xs btn-success btnSeleccionarEntrante"
+                                             data-idInscripcion="${sel.inscripcion_id}"
+                                             data-documento="${sel.identificacion}"
+                                             data-nombre="${sel.aprendiz}"
+                                             data-ficha="${sel.codigo_ficha} - ${sel.programa_formacion}"
+                                             title="Seleccionar Aprendiz">
+                                             <i class="fas fa-check"></i>
+                                         </button>
                                     </td>
                                 </tr>`;
                             });
@@ -531,9 +537,11 @@ $(document).ready(function () {
                 if (respuesta) {
                     $("#relevarNombreEntrante").val(respuesta["aprendiz"] || "");
                     $("#relevarFichaEntrante").val((respuesta["codigo_ficha"] || "") + " - " + (respuesta["programa_formacion"] || ""));
+                    $("#relevarIdInscripcionEntrante").val(respuesta["inscripcion_id"] || "");
                 } else {
                     $("#relevarNombreEntrante").val("");
                     $("#relevarFichaEntrante").val("");
+                    $("#relevarIdInscripcionEntrante").val("");
                 }
             }
         });
@@ -617,10 +625,12 @@ $(document).ready(function () {
     // SELECCIONAR APRENDIZ ENTRANTE DESDE EL LISTADO
     // =======================================================
     $(document).on("click", ".btnSeleccionarEntrante", function () {
+        let idInscripcion = $(this).attr("data-idInscripcion");
         let documento = $(this).attr("data-documento");
         let nombre = $(this).attr("data-nombre");
         let ficha = $(this).attr("data-ficha");
 
+        $("#relevarIdInscripcionEntrante").val(idInscripcion);
         $("#relevarDocumentoEntrante").val(documento);
         $("#relevarNombreEntrante").val(nombre);
         $("#relevarFichaEntrante").val(ficha);
@@ -686,6 +696,101 @@ $(document).ready(function () {
                         confirmButtonColor: "#dc3545"
                     });
                 }
+            }
+        });
+    });
+
+    // =======================================================
+    // PROCESAR RELEVO SUBMIT AJAX
+    // =======================================================
+    $(document).on("click", "#btnGuardarRelevo", function () {
+        let idSaliente = $("#relevarIdInscripcionSaliente").val();
+        let idAsignacionSaliente = $("#relevarIdAsignacionSaliente").val();
+        let idEntrante = $("#relevarIdInscripcionEntrante").val();
+        let motivo = $("#relevarMotivo").val();
+
+        if (!idSaliente || !idAsignacionSaliente) {
+            Swal.fire({
+                icon: "warning",
+                title: "Atención",
+                text: "No se cargó correctamente el aprendiz saliente. Cierre y vuelva a abrir la modal.",
+                background: "#343a40",
+                confirmButtonColor: "#17a2b8"
+            });
+            return;
+        }
+
+        if (!idEntrante) {
+            Swal.fire({
+                icon: "warning",
+                title: "Atención",
+                text: "Debe buscar o seleccionar un aprendiz entrante válido de la lista.",
+                background: "#343a40",
+                confirmButtonColor: "#17a2b8"
+            });
+            return;
+        }
+
+        if (motivo.trim() === "") {
+            Swal.fire({
+                icon: "warning",
+                title: "Atención",
+                text: "Debe ingresar el motivo del relevo.",
+                background: "#343a40",
+                confirmButtonColor: "#17a2b8"
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: "¿Está seguro?",
+            text: "Se registrará el relevo. El aprendiz saliente será retirado y el entrante pasará a ser beneficiado activo.",
+            icon: "question",
+            background: "#343a40",
+            showCancelButton: true,
+            confirmButtonColor: "#28a745",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Sí, procesar relevo",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let datos = new FormData();
+                datos.append("action", "procesarRelevo");
+                datos.append("id_inscripcion_saliente", idSaliente);
+                datos.append("id_inscripcion_entrante", idEntrante);
+                datos.append("id_asignacion_saliente", idAsignacionSaliente);
+                datos.append("motivo", motivo);
+
+                $.ajax({
+                    url: "ajax/financiera.ajax.php",
+                    method: "POST",
+                    data: datos,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: "json",
+                    success: function (respuesta) {
+                        if (respuesta.status === "ok") {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Relevo Procesado",
+                                text: "El relevo se ha registrado exitosamente.",
+                                background: "#343a40",
+                                confirmButtonColor: "#28a745"
+                            }).then(() => {
+                                window.location = "financiera";
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "No se pudo procesar el relevo en el sistema.",
+                                background: "#343a40",
+                                confirmButtonColor: "#dc3545"
+                            });
+                        }
+                    }
+                });
             }
         });
     });

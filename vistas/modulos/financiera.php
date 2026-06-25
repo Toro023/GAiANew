@@ -486,6 +486,11 @@ $pendientesBancarios = ControladorFinanciera::ctrListarPendientesBancarios();
             </div>
              <div class="modal-body" style="background-color: #454d55 !important;">
                 
+                <!-- Inputs ocultos para IDs de relevo -->
+                <input type="hidden" id="relevarIdInscripcionSaliente">
+                <input type="hidden" id="relevarIdAsignacionSaliente">
+                <input type="hidden" id="relevarIdInscripcionEntrante">
+                
                 <!-- SECCIÓN: APRENDIZ SALIENTE -->
                 <div class="card bg-dark text-white border border-secondary mb-3 shadow-sm">
                     <div class="card-header border-bottom border-secondary d-flex justify-content-between align-items-center" style="background-color: #343a40;">
