@@ -183,7 +183,7 @@ $pendientesBancarios = ControladorFinanciera::ctrListarPendientesBancarios();
                                                             title="Valores a Comprometer">
                                                             <i class="fas fa-dollar-sign"></i>
                                                         </button>
-                                                        <button class="btn btn-sm btn-outline-light btnDescargarPdf"
+                                                        <button class="btn btn-sm btn-outline-light btnDescargarPdf mr-1"
                                                             data-identificacion="<?php echo $ben["identificacion"]; ?>"
                                                             data-aprendiz="<?php echo $ben["aprendiz"]; ?>"
                                                             data-ficha="<?php echo $ben["codigo_ficha"]; ?>"
@@ -195,6 +195,12 @@ $pendientesBancarios = ControladorFinanciera::ctrListarPendientesBancarios();
                                                             data-apoyo="<?php echo $conv["descripcion_apoyo"]; ?>"
                                                             title="Descargar PDF">
                                                             <i class="fas fa-file-pdf"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-light btnRelevarBeneficiario"
+                                                            data-idInscripcion="<?php echo $ben["inscripcion_id"]; ?>"
+                                                            data-toggle="modal" data-target="#modal-relevarBeneficiario"
+                                                            title="Relevar Beneficiario">
+                                                            <i class="fas fa-exchange-alt"></i>
                                                         </button>
                                                     </div>
                                                 </td>
@@ -467,6 +473,8 @@ $pendientesBancarios = ControladorFinanciera::ctrListarPendientesBancarios();
         </div>
     </div>
 </div>
+
+
 
 <!-- Estilos para las tabs oscuras -->
 <style>
