@@ -60,4 +60,13 @@ class ControladorFinanciera
         return $respuesta;
     }
 
+    /*=============================================
+    MOSTRAR 5 APRENDICES SELECCIONADOS POR CONVOCATORIA (PARA RELEVO)
+    =============================================*/
+    static public function ctrMostrarSeleccionadosRelevo($idConvocatoria)
+    {
+        $respuesta = ModeloFinanciera::mdlMostrarSeleccionadosRelevo($idConvocatoria);
+        return $respuesta;
+    }
+
 }

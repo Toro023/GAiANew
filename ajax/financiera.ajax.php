@@ -9,6 +9,7 @@ class AjaxFinanciera {
     public $mesesOtorgados;
     public $fechaInicio;
     public $observacion;
+    public $idConvocatoria;
 
     // ==============================================
     // APROBAR DOCUMENTO BANCARIO AJAX
@@ -31,6 +32,14 @@ class AjaxFinanciera {
     // ==============================================
     public function ajaxMostrarBeneficiario() {
         $respuesta = ControladorFinanciera::ctrMostrarBeneficiario($this->idInscripcion);
+        echo json_encode($respuesta);
+    }
+
+    // ==============================================
+    // OBTENER SELECCIONADOS POR CONVOCATORIA AJAX
+    // ==============================================
+    public function ajaxMostrarSeleccionadosRelevo() {
+        $respuesta = ControladorFinanciera::ctrMostrarSeleccionadosRelevo($this->idConvocatoria);
         echo json_encode($respuesta);
     }
 
@@ -63,6 +72,12 @@ if (isset($_POST["action"])) {
         $ajax->idInscripcion = $_POST["id_inscripcion"];
         $ajax->observacion = $_POST["observacion"];
         $ajax->ajaxRechazarDocumentoBancario();
+    }
+
+    // Acción: Obtener Seleccionados para Relevo
+    if ($_POST["action"] == "obtenerSeleccionados" && isset($_POST["id_convocatoria"])) {
+        $ajax->idConvocatoria = $_POST["id_convocatoria"];
+        $ajax->ajaxMostrarSeleccionadosRelevo();
     }
 
 }

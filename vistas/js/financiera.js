@@ -1,9 +1,9 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
     // =======================================================
     // APROBAR DOCUMENTO BANCARIO (FINANCIERA)
     // =======================================================
-    $(document).on("click", ".btn-aprobar-banco", function() {
+    $(document).on("click", ".btn-aprobar-banco", function () {
         const idInscripcion = $(this).data("id-inscripcion");
 
         Swal.fire({
@@ -52,7 +52,7 @@ $(document).ready(function() {
                     contentType: false,
                     processData: false,
                     dataType: "json",
-                    success: function(respuesta) {
+                    success: function (respuesta) {
                         if (respuesta.status === "ok") {
                             Swal.fire({
                                 icon: 'success',
@@ -64,7 +64,7 @@ $(document).ready(function() {
                                 window.location = "financiera";
                             });
                         } else {
-                            Swal.fire({icon: 'error', title: 'Error', text: 'No se pudo aprobar la asignación.', background: '#343a40'});
+                            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo aprobar la asignación.', background: '#343a40' });
                         }
                     }
                 });
@@ -75,7 +75,7 @@ $(document).ready(function() {
     // =======================================================
     // RECHAZAR DOCUMENTO BANCARIO (FINANCIERA)
     // =======================================================
-    $(document).on("click", ".btn-rechazar-banco", function() {
+    $(document).on("click", ".btn-rechazar-banco", function () {
         const idInscripcion = $(this).data("id-inscripcion");
 
         Swal.fire({
@@ -111,7 +111,7 @@ $(document).ready(function() {
                     contentType: false,
                     processData: false,
                     dataType: "json",
-                    success: function(respuesta) {
+                    success: function (respuesta) {
                         if (respuesta.status === "ok") {
                             Swal.fire({
                                 icon: 'success',
@@ -123,7 +123,7 @@ $(document).ready(function() {
                                 window.location = "financiera";
                             });
                         } else {
-                            Swal.fire({icon: 'error', title: 'Error', text: 'No se pudo rechazar el documento.', background: '#343a40'});
+                            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo rechazar el documento.', background: '#343a40' });
                         }
                     }
                 });
@@ -134,7 +134,7 @@ $(document).ready(function() {
     // =======================================================
     // DESCARGAR REPORTE PDF DE APRENDIZ (FINANCIERA)
     // =======================================================
-    $(document).on("click", ".btnDescargarPdf", function() {
+    $(document).on("click", ".btnDescargarPdf", function () {
         const datos = $(this).data();
 
         const docDefinition = {
@@ -249,7 +249,7 @@ $(document).ready(function() {
     // =======================================================
     // MOSTRAR DETALLE FORMATO DE TERCEROS EN MODAL
     // =======================================================
-    $(document).on("click", ".btnFormatoTerceros", function() {
+    $(document).on("click", ".btnFormatoTerceros", function () {
         let idInscripcion = $(this).attr("data-idInscripcion");
         let datos = new FormData();
         datos.append("idInscripcion", idInscripcion);
@@ -262,7 +262,7 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             dataType: "json",
-            success: function(respuesta) {
+            success: function (respuesta) {
                 $("#terNombres").val(respuesta["nombres"] || "");
                 $("#terApellidos").val(respuesta["apellidos"] || "");
                 $("#terTipoDocumento").val(respuesta["tipo_documento"] || "");
@@ -285,7 +285,7 @@ $(document).ready(function() {
     // =======================================================
     // DESCARGAR EXCEL DE FORMATO DE TERCEROS
     // =======================================================
-    $(document).on("click", "#btnDescargarExcelTercero", function() {
+    $(document).on("click", "#btnDescargarExcelTercero", function () {
         let nombres = $("#terNombres").val() || "";
         let apellidos = $("#terApellidos").val() || "";
         let tipoDocumento = $("#terTipoDocumento").val() || "";
@@ -394,7 +394,7 @@ $(document).ready(function() {
     // =======================================================
     // MOSTRAR VALORES A COMPROMETER EN MODAL
     // =======================================================
-    $(document).on("click", ".btnValoresComprometer", function() {
+    $(document).on("click", ".btnValoresComprometer", function () {
         let idInscripcion = $(this).attr("data-idInscripcion");
         let datos = new FormData();
         datos.append("idInscripcion", idInscripcion);
@@ -407,7 +407,7 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             dataType: "json",
-            success: function(respuesta) {
+            success: function (respuesta) {
                 $("#compNumeroDocumento").val(respuesta["identificacion"] || "");
                 $("#compNombreAprendiz").val(respuesta["aprendiz"] || "");
                 $("#compTiempo").val(respuesta["meses_beneficio"] ? respuesta["meses_beneficio"] + " meses" : "");
@@ -421,9 +421,68 @@ $(document).ready(function() {
     });
 
     // =======================================================
+    // MOSTRAR RELEVAR BENEFICIARIO EN MODAL
+    // =======================================================
+    $(document).on("click", ".btnRelevarBeneficiario", function () {
+        let idInscripcion = $(this).attr("data-idInscripcion");
+        let datos = new FormData();
+        datos.append("idInscripcion", idInscripcion);
+
+        $.ajax({
+            url: "ajax/financiera.ajax.php",
+            method: "POST",
+            data: datos,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            success: function (respuesta) {
+                $("#relevarNombreActual").val(respuesta["aprendiz"] || "");
+                $("#relevarDocumentoActual").val(respuesta["identificacion"] || "");
+                $("#relevarFichaActual").val(respuesta["codigo_ficha"] || "");
+                $("#relevarMotivo").val("");
+
+                let nroConvocatoria = respuesta["nro_convocatoria"];
+                
+                // Cargar los 5 seleccionados de la misma convocatoria
+                let datosSeleccionados = new FormData();
+                datosSeleccionados.append("action", "obtenerSeleccionados");
+                datosSeleccionados.append("id_convocatoria", nroConvocatoria);
+
+                $.ajax({
+                    url: "ajax/financiera.ajax.php",
+                    method: "POST",
+                    data: datosSeleccionados,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: "json",
+                    success: function (seleccionados) {
+                        let html = "";
+                        if (seleccionados && seleccionados.length > 0) {
+                            seleccionados.forEach(function (sel) {
+                                html += `<tr>
+                                    <td class="text-center font-weight-bold">${sel.identificacion}</td>
+                                    <td>${sel.aprendiz}</td>
+                                    <td>${sel.codigo_ficha} - ${sel.programa_formacion}</td>
+                                </tr>`;
+                            });
+                        } else {
+                            html = `<tr>
+                                <td colspan="3" class="text-center text-muted font-italic">No hay aprendices seleccionados disponibles para relevo en esta convocatoria.</td>
+                            </tr>`;
+                        }
+                        $("#listaRelevoSeleccionados").html(html);
+                    }
+                });
+            }
+        });
+    });
+
+    // =======================================================
     // DESCARGAR EXCEL DE VALORES A COMPROMETER
     // =======================================================
-    $(document).on("click", "#btnDescargarExcelValores", function() {
+    $(document).on("click", "#btnDescargarExcelValores", function () {
         let numeroDocumento = $("#compNumeroDocumento").val() || "";
         let nombreAprendiz = $("#compNombreAprendiz").val() || "";
         let valorRp = $("#compValorRp").val() || "";

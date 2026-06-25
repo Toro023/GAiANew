@@ -571,6 +571,25 @@ $pendientesBancarios = ControladorFinanciera::ctrListarPendientesBancarios();
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Mini listado de seleccionados -->
+                        <div class="mt-3">
+                            <label class="text-success font-weight-bold" style="font-size: 0.9rem;">Últimos 5 Aprendices Seleccionados (Disponibles para Relevo)</label>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered text-white border-secondary mb-0" style="font-size: 0.85rem;">
+                                    <thead class="bg-secondary text-center">
+                                        <tr>
+                                            <th>Documento</th>
+                                            <th>Nombre</th>
+                                            <th>Ficha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="listaRelevoSeleccionados">
+                                        <!-- Cargar dinámicamente con AJAX -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

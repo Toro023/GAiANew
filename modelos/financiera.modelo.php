@@ -200,4 +200,33 @@ class ModeloFinanciera
         }
     }
 
+    /*=============================================
+    MOSTRAR 5 APRENDICES SELECCIONADOS POR CONVOCATORIA (PARA RELEVO)
+    =============================================*/
+    static public function mdlMostrarSeleccionadosRelevo($idConvocatoria)
+    {
+        $stmt = Conexion::conectar()->prepare("
+            SELECT 
+                i.id AS inscripcion_id,
+                u.documento_id AS identificacion,
+                CONCAT(u.nombres, ' ', u.apellidos) AS aprendiz,
+                f.codigo AS codigo_ficha,
+                f.programa_ficha AS programa_formacion
+            FROM inscripciones i
+            JOIN usuarios u ON i.usuario_id = u.id
+            JOIN fichas f ON i.ficha_id = f.id_ficha
+            WHERE i.convocatoria_id = :idConvocatoria AND i.estado = 'SELECCIONADO'
+            ORDER BY i.id DESC
+            LIMIT 5
+        ");
+
+        $stmt->bindParam(":idConvocatoria", $idConvocatoria, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = null;
+
+        return $resultados;
+    }
+
 }
